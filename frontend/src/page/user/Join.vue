@@ -144,7 +144,7 @@
             block
            
             :disabled="!(emailState && nameState)"
-            @click="home()"
+            @click="sendSignupFrom()"
             >가입하기</b-button
           > 
           </b-col
@@ -204,7 +204,7 @@ export default {
         .post(`${constants.baseUrl}/account/signup`, user)
         .then((Response) => {
           kakaoToken = Response.data;
-          // console.log(Response.data);
+          console.log(Response.data);
           this.$cookies.set("Auth-Token", kakaoToken);
           axios
             .get(baseURL + "/account/justlearn")
