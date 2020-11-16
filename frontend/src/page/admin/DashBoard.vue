@@ -40,7 +40,7 @@
       <div class="col-lg" @click="goPurchaseHistory">
         <div class="card text-center c-hover" style="width: 100%; height: 100%">
           <div class="card-body">
-            <h1 class="card-title">오늘의 매출액</h1>
+            <h1 class="card-title">결제 내역</h1>
           </div>
         </div>
       </div>

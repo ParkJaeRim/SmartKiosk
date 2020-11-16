@@ -52,7 +52,7 @@
               <div class="mt-3 col-auto mx-1 card-block py-0 text-center radio">
                 <div class="flex-row">
                   <div class="col">
-                    <div class="pic">
+                    <div class="pic" @click="nonMember">
                       <img
                         src="~@/assets/img/rejected.png"
                         width="200"
@@ -88,6 +88,9 @@ export default {
           console.log(Error);
         });
     },
+    nonMember(){
+      this.$router.push('qrcheck')
+    }
   },
 };
 </script>

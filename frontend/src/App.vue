@@ -54,5 +54,12 @@ export default {
 </script>
 
 <style>
+@font-face {
+  font-family: "Light";
+  src: url('./assets/Light.ttf');
+}
 
+*{
+  font-family: "Light";
+}
 </style>

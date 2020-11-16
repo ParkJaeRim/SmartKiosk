@@ -1,4 +1,4 @@
-package com.web.blog.model.orderlist;
+package com.web.blog.model.checkvisitor;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,10 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Column;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.web.blog.model.branch.Branch;
 
 
 @Entity
@@ -19,18 +17,10 @@ import com.web.blog.model.branch.Branch;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Orderlist {
+public class Checkvisitor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int oid;
-    private int uid;
-    private int sid;
-    private int menuid;
-
-    @ManyToOne
-    @JoinColumn(insertable = false, updatable = false, name = "menuid")
-    Branch branch;
-
-    @Column(insertable = false, updatable = false, name = "orderdate")
-    private String orderdate;
+    @JoinColumn(name = "cvidx")
+    private int cvidx;
+    private String uid;
 }

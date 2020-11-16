@@ -105,20 +105,24 @@
               active-tab-class="font-weight-bold"
               style="font-size: 40px"
               >
+              <div v-if="loginCheck == 1">
               <b-tab 
               title-link-class="text-dark"
-              title="최근먹은메뉴">
+              title="추천">
                 <div>
-                  <b-tabs content-class="mt-3" pills style="font-size: 20px">
-                    <br /><br />
+                    <br />
+                    <!-- 최근 먹은 메뉴-->
 
-                    <div  v-if="basketRecent.length > 0" class="row overflow container-fluid">
+                    <div  v-if="basketRecent.length > 0" class="row container-fluid">
+                    <div class = "col-10" >
+                      <p style = "font-size:45px; color:#65ca00">최근 먹은 메뉴</p>
+                    </div>
                       <div
-                        v-for="(slide, index) in basketRecent"
+                        v-for="(slide, index) in Recent"
                         :key="index"
-                        style="width: 32%; float: left"
+                        class="col-4"
                       >
-                        <div>
+                        <div v-if="index<3" class ="divclass">
                           <div
                             class="m-3 hover"
                             @click="GetMenuId(slide)"
@@ -141,9 +145,81 @@
                         </div>
                       </div>
                     </div>
-                  </b-tabs>
+                    <br/>
+                    <!-- 인기 음료 메뉴-->
+                    <div  v-if="basketPopular.length > 0" class="row container-fluid">
+                      <div class = "col-11">
+                      <p style = "margin-left:5px; font-size:45px; color:#65ca00">인기 음료 메뉴</p>
+                    </div> 
+                      <div
+                        v-for="(slide, jndex) in basketPopular"
+                        :key="jndex"
+                        class="col-4"
+                      >
+                        <div v-if="jndex<3" class ="divclass">
+                          <div
+                            class="m-3 hover"
+                            @click="GetMenuId(slide)"
+                            v-b-toggle.sidebar-right
+                          >
+                            <div style="text-align: center;">
+                              <img
+                                style="width: 70%"
+                                :src="slide.image"
+                                class="rounded image mb-2"
+                              />
+                            </div>
+                            <div style="text-align: center; font-size: 30px" class = "text-dark">
+                              {{ slide.name }}
+                            </div>
+                            <div style="text-align: center; font-size: 30px" class = "text-danger">
+                              {{ numberWithCommas(slide.price) }}원
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br/>
+                    <!-- 인기 푸드 메뉴-->
+                    <div  v-if="basketFoodPopular.length > 0" class="row container-fluid">
+                      <div class = "col-11">
+                      <p style = "margin-left:5px; font-size:45px; color:#65ca00">인기 푸드 메뉴</p>
+                    </div> 
+                      <div
+                        v-for="(slide, kndex) in basketFoodPopular"
+                        :key="kndex"
+                        class="col-4"
+                      >
+                        <div v-if="kndex<3" class ="divclass">
+                          <div
+                            class="m-3 hover"
+                            @click="GetMenuId(slide)"
+                            v-b-toggle.sidebar-right
+                          >
+                            <div style="text-align: center;">
+                              <img
+                                style="width: 70%"
+                                :src="slide.image"
+                                class="rounded image mb-2"
+                              />
+                            </div>
+                            <div style="text-align: center; font-size: 30px" class = "text-dark">
+                              {{ slide.name }}
+                            </div>
+                            <div style="text-align: center; font-size: 30px" class = "text-danger">
+                              {{ numberWithCommas(slide.price) }}원
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+
                 </div>
               </b-tab>
+              </div>
+
+
               <b-tab 
                 title-link-class="text-dark"      
                 @click="seperateCate(1, 1); rightTmp();" 
@@ -154,6 +230,7 @@
                       content-class="mt-5"
                       align="center"
                       style="font-size: 30px"
+                      active-nav-item-class="font-weight-bold text-uppercase text-danger"
                     >
                       <b-tab
                         title-link-class="text-success"
@@ -255,6 +332,7 @@
                     content-class="mt-3"
                     align="center"
                     style="font-size: 30px"
+                    active-nav-item-class="font-weight-bold text-uppercase text-danger"
                   >
                     <b-tab
                       title-link-class="text-success"
@@ -322,7 +400,6 @@
                           </div>
                       </div>
                     </div>
-
                   </b-tabs>
                 </div>
               </b-tab>
@@ -332,7 +409,6 @@
         </div>
       </div>
     </div>
-  <footer>푸터</footer>
   </div>
   
 </template>
@@ -360,21 +436,26 @@ export default {
     return {
       test: true,
       menusCate: {},
-      menusCateTmp:{},
+      menusCateTmp: {},
       menuAll: {},
       y: 1,
       aa: 0,
       basket: [],
       basketRecent: {},
+      Recent: {},
+      basketPopular: {},
+      basketFoodPopular:{},
       modalShow: false,
       basketPrice: 0,
       uid: "",
+      loginCheck : 0,
     };
   },
   created() {
     this.authUser();
-
     this.GetMenuInfo();
+    this.GetMenuListPopular();
+    this.GetMenuListPopular2();
   },
   methods: {
     purchase() {
@@ -428,25 +509,31 @@ export default {
       );
     },
     authUser() {
-      console.log("method - authUser");
       const axiosConfig = {
         headers: {
           jwtToken: `${this.$cookies.get("Auth-Token")}`,
         },
       };
-      axios
-        .post(`${constants.baseUrl}/authuser`, "", axiosConfig)
-        .then((res) => {
-          this.uid = res.data.uid;
-          this.GetMenuListRecent();
-        })
-        .catch((err) => console.log(err));
+      if (axiosConfig.headers.jwtToken != "null") {
+        this.loginCheck = 1;
+        axios
+          .post(`${constants.baseUrl}/authuser`, "", axiosConfig)
+          .then((res) => {
+            this.uid = res.data.uid;
+            this.GetMenuListRecent();
+          })
+          .catch((err) => console.log(err));
+      }else{
+        this.loginCheck = 0;
+      }
     },
     GetMenuInfo() {
       axios
         .get(baseURL + "/branch/menu", { params: { sid: 1 } })
         .then((res) => {
           this.menuAll = res.data.object;
+          this.seperateCate(1, 1);
+          this.rightTmp();
         })
         .catch((err) => console.log(err.response));
     },
@@ -459,6 +546,24 @@ export default {
         .get(`${baseURL}/order/mymenu`, { params: { uid: this.uid, sid: 1 } })
         .then((res) => {
           this.basketRecent = res.data;
+          const Tmp = res.data;
+          this.recent();
+        })
+        .catch((err) => console.log(err.response));
+    },
+    GetMenuListPopular() {
+      axios
+        .get(baseURL + "/order/hotcurrentdrink")
+        .then((res) => {
+          this.basketPopular = res.data.object;
+        })
+        .catch((err) => console.log(err.response));
+    },
+    GetMenuListPopular2() {
+      axios
+        .get(baseURL + "/order/hotcurrentfood")
+        .then((res) => {
+          this.basketFoodPopular = res.data.object;
         })
         .catch((err) => console.log(err.response));
     },
@@ -483,18 +588,20 @@ export default {
     numberWithCommas(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
-    rightTmp(){
-      this.menusCateTmp = this.menusCate.slice(this.aa,this.aa+9);
-      console.log(this.menusCateTmp);
+    rightTmp() {
+      this.menusCateTmp = this.menusCate.slice(this.aa, this.aa + 9);
     },
-    right(){
+    right() {
       this.aa += 9;
       this.rightTmp();
     },
-    left(){
-      this.aa -=9;
+    left() {
+      this.aa -= 9;
       this.rightTmp();
-    }
+    },
+    recent() {
+      this.Recent = this.basketRecent.slice(0, 3);
+    },
   },
 };
 </script>
@@ -504,17 +611,16 @@ export default {
 * {
   font-family: "Jua", sans-serif;
   font-size: 13px;
-  line-height : 35px;
+  line-height: 35px;
 }
 .hover:hover {
   background-color: #eee;
   cursor: pointer;
 }
 .click:hover {
-  /* background-color: #ff0040; */
   cursor: pointer;
 }
-.cursor{
+.cursor {
   cursor: pointer;
 }
 .overflow {
@@ -522,12 +628,7 @@ export default {
   overflow-x: hidden;
   overflow-y: auto;
 }
-footer {
-  width: 100%;
-  height: 90px;
-  background: #ddd;
-  margin-top: auto;
-}
+
 .wrap {
   text-align: center;
   display: flex;
@@ -535,26 +636,56 @@ footer {
   height: 100%;
 }
 
-.tab-pills > .active > a,
-.tab-pills > .active > a:hover {
-  background-color: red;
-}
 .tmp {
   position: fixed;
   bottom: 0;
 }
-.right{
+.right {
   position: fixed;
   z-index: 160;
   bottom: 630px;
   right: 8px;
 }
-.left{
+.left {
   position: fixed;
   z-index: 160;
   bottom: 630px;
   left: 5px;
 }
-p.test {word-break: break-all;}
+p.test {
+  word-break: break-all;
+}
 
+.tmp {
+  position: fixed;
+  bottom: 0;
+}
+.right {
+  position: fixed;
+  z-index: 160;
+  bottom: 630px;
+  right: 8px;
+}
+.left {
+  position: fixed;
+  z-index: 160;
+  bottom: 630px;
+  left: 5px;
+}
+p.test {
+  word-break: break-all;
+}
+.left {
+  position: fixed;
+  z-index: 160;
+  bottom: 630px;
+  left: 5px;
+}
+p.test {
+  word-break: break-all;
+}
+.divclass {
+  max-width: 80%;
+  height: auto;
+}
 </style>

@@ -163,7 +163,7 @@ def predict(X_img_path, knn_clf=None, model_path=None, distance_threshold=0.4):
 
 
 if __name__ == "__main__":
-    base_path = "/home/ubuntu/s03p31b107/face_classifier/"
+    base_path = "/var/lib/jenkins/workspace/sucheol\'s/face_classifier/"
     flag = False
     # STEP 1: Train the KNN classifier and save it to disk
     # Once the model is trained and saved, you can skip this step next time.

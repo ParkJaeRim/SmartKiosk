@@ -105,7 +105,7 @@ if __name__ == '__main__':
                     help="resize the frame to process (less time, less accuracy)")
     args = ap.parse_args()
 
-    base_path = "/home/ubuntu/s03p31b107/face_classifier/"
+    base_path = "/var/lib/jenkins/workspace/sucheol\'s/face_classifier/"
 
     src_file = args.inputfile
     if src_file == "0":

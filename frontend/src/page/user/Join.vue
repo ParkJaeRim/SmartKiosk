@@ -1,7 +1,7 @@
 <template>
   <div class="user mt-5" id="join">
     <div class="container">
-    <h1 style="text-align: center">회원 가입</h1>
+      <h1 style="text-align: center">회원 가입</h1>
 
       <!-- 이름 -->
       <b-form-group
@@ -87,7 +87,8 @@
           v-model="age"
           type="number"
           required
-          placeholder="Enter age"
+          placeholder="10"
+          min="10" max="100" step="10"
         ></b-form-input>
       </b-form-group>
 
@@ -114,21 +115,19 @@
       <!-- 파일 -->
       <b-form-group
         id="input-group-6"
-        label="Images"
+        label="Picture"
         label-size="lg"
         label-for="input-6"
       >
-        <b-input-group size="lg">
-          <b-input-group-prepend is-text>
-            <b-icon icon="images"></b-icon>
-          </b-input-group-prepend>
-          <b-form-input
-            id="input-6"
-            v-model="learningfile"
-            required
-            placeholder="Enter images"
-          ></b-form-input>
-        </b-input-group>
+        <video id="video" width="480" height="360" autoplay></video>
+        <canvas
+          id="canvas"
+          width="480"
+          height="360"
+          style="display: none;"
+        ></canvas>
+        <b-btn @click="snap">촬영</b-btn>
+        <b-btn @click="start">카메라켜기</b-btn>
       </b-form-group>
 
       <b-row>
@@ -153,6 +152,7 @@
 import axios from "axios";
 import constants from "../../lib/constants";
 import { mapGetters } from "vuex";
+const baseURL = constants.baseUrl;
 
 export default {
   components: {},
@@ -193,11 +193,60 @@ export default {
           kakaoToken = Response.data;
           console.log(Response.data);
           this.$cookies.set("Auth-Token", kakaoToken);
-          this.$router.push("/");
+          axios
+            .get(baseURL+'/account/justlearn')
+            .then(() => {
+              this.$router.push("/");
+            })
+            .catch((Error) => {
+              console.log(Error);
+            });
         })
         .catch((Error) => {
           console.log(Error);
         });
+    },
+
+    start() {
+      var video = document.getElementById("video");
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices
+          .getUserMedia({ video: true })
+          .then(function(stream) {
+            video.srcObject = stream;
+            video.play();
+          });
+      }
+    },
+
+    tmp(cnt) {
+      var canvas = document.getElementById("canvas");
+      var context = canvas.getContext("2d");
+      context.drawImage(video, 0, 0, 480, 360);
+      var dataURL = canvas.toDataURL();
+
+      this.imagebase64.push(dataURL);
+      setTimeout(() => {
+        if (cnt == this.howmany - 1) {
+          console.log(this.imagebase64);
+          axios
+            .post(baseURL + "/imageset", this.imagebase64)
+            .then((response) => {
+              this.imagebase64 = [];
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      }, 500);
+    },
+
+    snap() {
+      this.imagebase64.push(this.getKakaoId.toString());
+
+      for (let i = 0; i < this.howmany; i++) {
+        this.tmp(i);
+      }
     },
   },
   watch: {},
@@ -211,6 +260,9 @@ export default {
       tel: "",
       learningfile: "",
       // isTerm: false,
+
+      imagebase64: [],
+      howmany: 20,
     };
   },
 };

@@ -17,6 +17,11 @@ public interface OrderlistDao extends JpaRepository<Orderlist, String> {
 	// Orderlist[] findOrderlistByUidAndSidOrderByOrderdateDesc(int uid, int sid);
 	ArrayList<Orderlist> findOrderlistByUidAndSidOrderByOrderdateDesc(int uid, int sid);
 	ArrayList<Orderlist> findOrderlistByUidAndSidOrderByOrderdateAsc(int uid, int sid);
+	ArrayList<Orderlist> findOrderlistByMenuid(int menuid);
+
+
+	@Query(nativeQuery = true, value = "SELECT *,count(menuid) AS c FROM orderlist WHERE DATE_FORMAT(orderdate,'%h') GROUP BY menuid ORDER BY c desc")
+	ArrayList<Orderlist> hotmenutimes();
 
 	@Query(nativeQuery = true,value="SELECT DATE_FORMAT(o.orderdate,'%m'), SUM(b.price) FROM orderlist o join branch b on o.menuid = b.menuid GROUP BY DATE_FORMAT(o.orderdate,'%Y%m')")
 	List<?> findMonthIncome();

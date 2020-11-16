@@ -7,11 +7,10 @@
       <div class="btn" @click="kakaojoin">Login</div>
     </div>
     <div v-if="isToken">
-       <router-link to="/user/userinfo">
-      <div class="btn">Account</div>
+      <router-link to="/user/Mypage">
+        <div class="btn">Purchase details</div>
       </router-link>
     </div>
-    
   </div>
 </template>
 
@@ -36,7 +35,7 @@ export default {
     islogin() {
       this.isToken = this.$cookies.isKey("Auth-Token");
     },
-    kakaoInfoUpdate: function (id) {
+    kakaoInfoUpdate: function(id) {
       this.$store.commit("kakaoIdUpdate", id);
     },
     kakaojoin() {
@@ -52,37 +51,17 @@ export default {
             success: function(res) {
               x.kakao.uid = res.id;
               x.kakao.name = res.properties.nickname;
-              
+
               axios
                 .post(`${baseURL}/account/kakaologin`, x.kakao)
                 .then((response) => {
-                  console.log(response.data);
-                  console.log("logger - check line");
                   if (response.data != "") {
                     kakaoToken = response.data;
                     x.$cookies.set("Auth-Token", kakaoToken);
-                    console.log("logger - test111");
                     x.$router.go("/");
-                    // x.$router.push({name: "main"}).catch((err) => {
-                    //   console.log(err);
-                    // });
-                   
                   } else {
-                    alert("얼굴 촬영을 시작하도록 하겠습니다 잠시만 기다려주시길 바랍니다")
-                     console.log("logger - test222");
-                    axios
-                      .get(`${baseURL}/account/takepic`)
-                      .then((response) => {
-                        console.log(response)
-                        console.log('logger - baseURL/accout/takepic axios result')
-                        console.log(response.data);
-
-                        x.kakaoInfoUpdate(res.id);
-                        console.log(res.id);
-                        x.$router.push({ name: "join" });
-                      })
-                      .catch((err) => console.log(err.response));
-                   
+                    x.kakaoInfoUpdate(res.id);
+                    x.$router.push({ name: "join" });
                   }
                 })
                 .catch((err) => console.log(err.response));
@@ -100,7 +79,7 @@ export default {
       }, 5);
     },
 
-    logout: function () {
+    logout: function() {
       this.$cookies.remove("Auth-Token");
       setTimeout(() => {
         this.$router.push("/").catch((err) => {
@@ -111,7 +90,7 @@ export default {
     },
   },
 
-  data: function () {
+  data: function() {
     return {
       kakao: {
         uid: "",

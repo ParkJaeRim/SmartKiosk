@@ -1,8 +1,13 @@
 <template>
   <div class="container">
     <div>
+        <h1 style="text-align:center;">매장에서 가장 잘 팔리는 메뉴 5가지</h1>
         <popular-menu></popular-menu>    
     </div> 
+      <br />
+      <br />
+      <br />
+      <h1 style="text-align:center;">오늘의 결제 내역</h1>
     <b-table
       id="my-table"
       :items="items"
