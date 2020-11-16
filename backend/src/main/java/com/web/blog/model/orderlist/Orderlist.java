@@ -32,14 +32,10 @@ public class Orderlist {
     private int sid;
     private int menuid;
 
-    // @JsonIgnore
-    // @ManyToOne(mappedBy="branch")
-    // @JoinColumn(insertable = false, updatable = false, name = "menuid")
-    // private Branch branch;
     @ManyToOne
     @JoinColumn(insertable = false, updatable = false, name = "menuid")
     Branch branch;
 
     @Column(insertable = false, updatable = false, name = "orderdate")
-    private Date orderdate;
+    private String orderdate;
 }

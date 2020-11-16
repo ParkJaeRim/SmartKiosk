@@ -1,7 +1,7 @@
 <template>
   <div class="user mt-5" id="join">
     <div class="container">
-      <h4 style="text-align: center">회원가입</h4>
+    <h1 style="text-align: center">회원 가입</h1>
 
       <!-- 이름 -->
       <b-form-group
@@ -218,10 +218,10 @@ export default {
 
 <style scoped>
 h1 {
-  margin-bottom: 50px;
+  margin-bottom: 30px;
 }
 .container {
-  background-color: #faebd7;
+  background-color: white;
   /* padding: 0 30px 0 30px; */
 }
 

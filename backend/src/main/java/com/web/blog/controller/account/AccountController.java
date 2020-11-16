@@ -22,9 +22,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.web.blog.dao.user.UserDao;
+// import com.web.blog.faceage.faceageService;
 import com.web.blog.jwt.JwtService;
 import com.web.blog.model.BasicResponse;
-import com.web.blog.model.user.SignupRequest;
 import com.web.blog.model.user.User;
 
 import io.swagger.annotations.ApiOperation;
@@ -46,6 +46,8 @@ public class AccountController {
     @Autowired
     JwtService jwtService;
 
+    // @Autowired
+    // faceageService faceageService;
     // @GetMapping("/account/login")
     // @ApiOperation(value = "로그인")
     // public Object login(@RequestParam(required = true) final String email,
@@ -72,6 +74,8 @@ public class AccountController {
     public Object viewInfo(@RequestBody User request) throws SQLException, IOException {
         String token = null;
         System.out.println(request.getUid());
+        System.out.println("1111111111111111111111111");
+        // faceageService.test();
         try {
             Optional<User> userOpt = userDao.findUserByUid(request.getUid());
             if (userOpt.isPresent()) {
@@ -99,7 +103,7 @@ public class AccountController {
         String token = null;
         System.out.println("logger - signup method");
         // 이메일, 닉네임 중복처리 필수
-
+ 
         System.out.println(request.getEmail());
         User user = userDao.getUserByEmail(request.getEmail());
 
@@ -160,15 +164,15 @@ public class AccountController {
             e.printStackTrace();
             // return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
+    }  
 
     @GetMapping("/account/takepic")
     public ResponseEntity<?> takePictoJoin() {
         ResponseEntity<?> response = null;
         String[] command = new String[8];
-
+        System.out.println("=============================================================");
         command[0] = "python";
-        command[1] = "C:\\Users\\multicampus\\Desktop\\project3\\s03p31b107\\face_classifier\\face_classifier.py";
+        command[1] = "/home/ubuntu/s03p31b107/face_classifier/face_classifier.py";
         command[2] = "0";
         command[3] = "-d";
         command[4] = "-S";
@@ -179,6 +183,7 @@ public class AccountController {
         try {
             ByteArrayOutputStream out = execPython(command);
             String extact_result = out.toString();
+            System.out.println(extact_result);
             for (int i = 0; i < extact_result.length(); i++) {
                 char c = extact_result.charAt(i);
                 if (c == '\n' || c == '\r') {
@@ -188,7 +193,7 @@ public class AccountController {
 
             command = new String[2];
             command[0] = "python";
-            command[1] = "C:\\Users\\multicampus\\Desktop\\project3\\s03p31b107\\face_classifier\\only_train.py";
+            command[1] = "/home/ubuntu/s03p31b107/face_classifier/only_train.py";
             try {
                 out = execPython(command);
             } catch (Exception e) {
@@ -198,7 +203,7 @@ public class AccountController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        System.out.println(".........................................................................");
         response = new ResponseEntity<>(null, HttpStatus.OK);
 
         return response;
@@ -211,9 +216,9 @@ public class AccountController {
         BasicResponse result = new BasicResponse();
         String[] command = new String[8];
         StringBuffer res = new StringBuffer();
-
+       
         command[0] = "python";
-        command[1] = "C:\\Users\\multicampus\\Desktop\\project3\\s03p31b107\\face_classifier\\take_pic.py";
+        command[1] = "/home/ubuntu/s03p31b107/face_classifier/take_pic.py";
         command[2] = "0";
         command[3] = "-d";
         command[4] = "-S";
@@ -224,6 +229,7 @@ public class AccountController {
         try {
             ByteArrayOutputStream out = execPython(command);
             String extact_result = out.toString();
+            System.out.println(extact_result);
             for (int i = 0; i < extact_result.length(); i++) {
                 char c = extact_result.charAt(i);
                 if (c == '\n' || c == '\r') {
@@ -237,12 +243,12 @@ public class AccountController {
             command[0] = "python";
             // command[1] =
             // "C:\\Users\\multicampus\\Desktop\\project3\\s03p31b107\\face_classifier\\face_recognition_mlp.py";
-            command[1] = "C:\\Users\\multicampus\\Desktop\\project3\\s03p31b107\\face_classifier\\face_recognition_knn.py";
+            command[1] = "/home/ubuntu/s03p31b107/face_classifier/face_recognition_knn.py";
             // res = new StringBuffer();
             try {
                 out = execPython(command);
                 extact_result = out.toString();
-
+                
                 for (int i = 0; i < extact_result.length(); i++) {
                     char c = extact_result.charAt(i);
                     if (c == '\n' || c == '\r') {

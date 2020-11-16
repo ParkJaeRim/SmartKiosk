@@ -22,7 +22,7 @@ public class OrderlistRequest {
     int menuid;
 
     @ApiModelProperty(required = true)
-    Date orderlist;
+    String orderlist;
 
 
 }

@@ -1,13 +1,13 @@
 package com.web.blog.controller.orderlist;
-import java.util.*;
+
 import com.web.blog.dao.branch.BranchDao;
 import com.web.blog.dao.orderlist.OrderlistDao;
+import com.web.blog.dao.store.StoreDao;
 import com.web.blog.dao.user.UserDao;
 import com.web.blog.model.BasicResponse;
 import com.web.blog.model.branch.Branch;
 import com.web.blog.model.orderlist.Orderlist;
 import com.web.blog.model.orderlist.OrderlistRequest;
-import com.web.blog.model.user.User;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
@@ -43,8 +43,10 @@ public class OrderlistController {
     BranchDao BranchDao;
 
     @Autowired
-    OrderlistDao OrderlistDao;
+    StoreDao StoreDao;
 
+    @Autowired
+    OrderlistDao OrderlistDao;
 
     @GetMapping("/get/orderlist")
     @ApiOperation(value = "주문 메뉴 전체 목록")
@@ -58,7 +60,6 @@ public class OrderlistController {
             List<Branch> menulist = BranchDao.findBranchByMenuid(menuid);
             ret.add(menulist.get(0));
         }
-        
 
         ResponseEntity<Object> response = null;
         BasicResponse result = new BasicResponse();
@@ -77,13 +78,10 @@ public class OrderlistController {
         BasicResponse result = new BasicResponse();
         result.status = true;
         result.data = "주문 메뉴 전체 목록 조회 완료";
-        System.out.println(result.data);
         result.object = orderlistlist;
         response = new ResponseEntity<>(result, HttpStatus.OK);
         return response;
     }
-
-
 
     @GetMapping("/get/orderlist/recent")
     @ApiOperation(value = "최신 주문 메뉴")
@@ -113,7 +111,8 @@ public class OrderlistController {
     public Object orderMenu(@Valid @RequestBody final OrderlistRequest[] orderlistRequest) {
         System.out.println("logger - 주문메뉴: ");
         ResponseEntity<Object> response = null;
-        System.out.println(Arrays.toString(orderlistRequest));
+        System.out.println(Arrays.toString(orderlistRequest)); //[OrderlistRequest(oid=0, uid=0, sid=1, menuid=498, orderlist=null)]
+
 
         // Optional<User> user = userDao.findUserByUid(orderlistRequest);
         int orderuid = orderlistRequest[0].getUid(); 
@@ -131,6 +130,29 @@ public class OrderlistController {
             response = new ResponseEntity<>(result, HttpStatus.OK);
         }
 
+        return response;
+    }
+
+    @GetMapping("/mypage/searchorder")
+    @ApiOperation(value = "주문 조회")
+    public Object searchOrder(@RequestParam(required = true) int uid, int sid) {
+        List<Orderlist> orderlist = OrderlistDao.findOrderlistByUidAndSidOrderByOrderdateDesc(uid, sid);
+        List<List<String>> resultlist = new LinkedList<>();
+        for(int i=0; i< orderlist.size(); i++){
+            List<String> sublist =new LinkedList<>();
+            sublist.add(orderlist.get(i).getOrderdate());
+            sublist.add(StoreDao.test(orderlist.get(i).getSid()));
+            sublist.add(BranchDao.findBranchBySidAndMenuid(orderlist.get(i).getSid(), orderlist.get(i).getMenuid()).getName());
+            sublist.add(BranchDao.findBranchBySidAndMenuid(orderlist.get(i).getSid(), orderlist.get(i).getMenuid()).getImage());
+            sublist.add(Integer.toString(BranchDao.findBranchBySidAndMenuid(orderlist.get(i).getSid(), orderlist.get(i).getMenuid()).getPrice()));
+            resultlist.add(sublist);
+        }
+        ResponseEntity<Object> response = null;
+        BasicResponse result = new BasicResponse();
+        result.status = true;
+        result.data = "개인 주문 메뉴 전체 목록 조회 완료";
+        result.object = resultlist;
+        response = new ResponseEntity<>(result, HttpStatus.OK);
         return response;
     }
 
@@ -153,6 +175,4 @@ public class OrderlistController {
         System.out.println(ret);
         return ret;
     }
-
-    
 }

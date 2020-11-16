@@ -1,65 +1,118 @@
 <template>
-  <div>
+  <div style="height:100vh; overflow: hidden;">
     <div>
-      <b-sidebar id="sidebar-right" backdrop title="장바구니" right shadow>
+      <b-sidebar id="sidebar-right" backdrop title="장바구니" right shadow width=400px>
         <div class="px-2 py-2">
           <div class="d-flex mb-4" v-for="(menu, k) in basket" :key="k">
             <th>
               <b-img
                 :src="menu.image"
-                class="rounded-circle image"
+                class="rounded image mb-2"
                 width="140%"
               ></b-img>
             </th>
-            <th class="px-3 py-3">
-              <tr style="font-size: 20px">
+            <th class="px-3 py-3 container">
+              <tr style="font-size: 25px">
                 {{
                   menu.name
                 }}
               </tr>
-              <tr style="font-size: 20px">
-                <b-icon icon="x-circle" scale="2" variant="danger"></b-icon>
+              <tr>
+                <td style="font-size: 25px;" class = "text-danger">
                 {{
-                  menu.price
+                  numberWithCommas(menu.price)
                 }}원
+                </td>
+                <td>
+                  <b-icon
+                  icon="x-circle"
+                  scale="2"
+                  variant="danger"
+                  @click="DeleteBasket(menu)"
+                  class="click"
+                ></b-icon>
+                </td>
               </tr>
             </th>
-
             <br /><br />
           </div>
+
         </div>
         <div class="px-2">
-          <p style="font-size: 20px">총 금액 : {{ basketPrice }}원</p>
+          <th>
+          <td>
+          <p style="font-size: 40px; width : 150px">총 금액 : </p>
+          </td>
+          <td>
+          <p style="font-size: 40px;" class = "text-danger"> {{ numberWithCommas(basketPrice) }}원</p> 
+          </td>
+          </th>
           <div>
-            <b-button v-b-modal.modal-1 @click="purchase()">결제하기</b-button>
-            <b-button v-b-toggle.sidebar-right @click="GetMenuListRecent()"
-              >최근 목록</b-button
-            >
+            <th>
+            <td>
+            <b-button variant ="success" style="width: 190px; height:60px; font-size:20px;" v-b-modal.modal-1>결제하기</b-button>
+            </td>
+            <td>
+            <b-button  variant ="danger" style="width: 190px; height:60px; font-size:20px;" v-b-modal.modal-2>취소하기</b-button>
+            </td>
+            </th>
+            
+            <b-modal id="modal-1" centered size = "lg" style="font-size: 50px">
+              <div>
+                    <p class = "my-4" style="font-size:50px; text-align:center;">선택해 주세요</p>
+                <th>
+                  <td style="text-align:center;">
+                    <img src="@/assets/img/takeout.png" style="width : 90%;" @click="purchase()" class = "hover">
+                    <p class = "my-4" style="font-size:35px;">포장 주문</p>
+                  </td>
+                  <td style="text-align:center;">
+                    <img src="@/assets/img/coffee.png" style="width : 90%;" @click="purchase()" class = "hover">
+                    <p class = "my-4" style="font-size:35px;">매장 식사</p>
+                  </td>
+                </th> 
+              </div>
+              <template #modal-footer="{cancel}">
+                <b-button style="width:70px; height:50px; font-size:15px;" variant="danger" @click="cancel()">
+                  Cancel
+                </b-button>
+                </template>
+            </b-modal>
 
-            <b-modal id="modal-1" title="결제 하기" @ok="GetMenuList()">
-              <p class="my-4">Hello from modal!</p>
+            <b-modal id="modal-2" centered button-size="lg" @ok="purchase()" style="font-size:50px;">
+              <p class = "my-4" style="font-size:50px; text-align:center;">정말 취소 하시겠습니까?</p>
+                <template #modal-footer="{ okcancel, cancel }">
+                <b-button style="width:70px; height:50px; font-size:15px;" variant="success" @click="okcancel()">
+                  OK
+                </b-button>
+                <b-button style="width:70px; height:50px; font-size:15px;" variant="danger" @click="cancel()">
+                  Cancel
+                </b-button>
+                </template>
             </b-modal>
           </div>
         </div>
+
       </b-sidebar>
     </div>
 
     <div class="mt-1 p-0">
-      <div id="body">
+      <div id="body" >
         <div id="content">
           <b-card no-body>
             <b-tabs
               align="center"
-              active-nav-item-class="font-weight-bold text-uppercase"
-              active-tab-class="font-weight-bold text-success"
+              active-nav-item-class="font-weight-bold text-uppercase text-danger"
+              active-tab-class="font-weight-bold"
               style="font-size: 40px"
-            >
-              <b-tab title="최근먹은메뉴">
+              >
+              <b-tab 
+              title-link-class="text-dark"
+              title="최근먹은메뉴">
                 <div>
                   <b-tabs content-class="mt-3" pills style="font-size: 20px">
                     <br /><br />
 
-                    <div v-if="basketRecent.length > 0">
+                    <div  v-if="basketRecent.length > 0" class="row overflow container-fluid">
                       <div
                         v-for="(slide, index) in basketRecent"
                         :key="index"
@@ -71,18 +124,18 @@
                             @click="GetMenuId(slide)"
                             v-b-toggle.sidebar-right
                           >
-                            <div>
+                            <div style="text-align: center;">
                               <img
-                                style="width: 100%"
+                                style="width: 70%"
                                 :src="slide.image"
-                                class="rounded-circle image"
+                                class="rounded image mb-2"
                               />
                             </div>
-                            <div style="text-align: center; font-size: 20px">
+                            <div style="text-align: center; font-size: 30px" class = "text-dark">
                               {{ slide.name }}
                             </div>
-                            <div style="text-align: center; font-size: 20px">
-                              {{ slide.price }}원
+                            <div style="text-align: center; font-size: 30px" class = "text-danger">
+                              {{ numberWithCommas(slide.price) }}원
                             </div>
                           </div>
                         </div>
@@ -91,68 +144,154 @@
                   </b-tabs>
                 </div>
               </b-tab>
-
-              <b-tab @click="seperateCate(1, 1)" title="음료">
+              <b-tab 
+                title-link-class="text-dark"      
+                @click="seperateCate(1, 1); rightTmp();" 
+                title="음료">
                 <div>
-                  <b-tabs content-class="mt-5" align="center" pills style="font-size: 20px;">
-                    <b-tab title="콜드 브루" @click="seperateCate(1, 1)"></b-tab>
-                    <b-tab title="리저브" @click="seperateCate(1, 2)"></b-tab>
-                    <b-tab title="에스프레소" @click="seperateCate(1, 3)"></b-tab>
-                    <b-tab title="블론드" @click="seperateCate(1, 5)"></b-tab>
-                    <b-tab title="프라푸치노" @click="seperateCate(1, 6)"></b-tab>
-                    <b-tab title="블렌디드" @click="seperateCate(1, 7)"></b-tab>
-                    <b-tab title="피지오" @click="seperateCate(1, 8)"></b-tab>
-                    <b-tab title="티바나" @click="seperateCate(1, 9)"></b-tab>
-                    <b-tab title="브루드 커피" @click="seperateCate(1, 10)"></b-tab>
-                    <b-tab title="기타" @click="seperateCate(1, 11)"></b-tab>
-                    <b-tab title="병음료" @click="seperateCate(1, 12)"></b-tab>
+                  <div>
+                    <b-tabs
+                      content-class="mt-5"
+                      align="center"
+                      style="font-size: 30px"
+                    >
+                      <b-tab
+                        title-link-class="text-success"
+                        title="콜드 브루"
+                        @click="seperateCate(1, 1); rightTmp();"
+                      ></b-tab>
+                      <b-tab 
+                        title-link-class="text-success"
+                        title="리저브" 
+                        @click="seperateCate(1, 2); rightTmp();"></b-tab>
+                      <b-tab
+                        title-link-class="text-success"
+                        title="에스프레소"
+                        @click="seperateCate(1, 3); rightTmp();"
+                      ></b-tab>
+                      <b-tab 
+                        title-link-class="text-success"
+                        title="블론드" 
+                        @click="seperateCate(1, 5); rightTmp();"></b-tab>
+                      <b-tab
+                        title-link-class="text-success"
+                        title="프라푸치노"
+                        @click="seperateCate(1, 6); rightTmp();"
+                      ></b-tab>
+                      <b-tab
+                        title-link-class="text-success"
+                        title="블렌디드"
+                        @click="seperateCate(1, 7); rightTmp();"
+                      ></b-tab>
+                      <b-tab 
+                        title-link-class="text-success"
+                        title="피지오" 
+                        @click="seperateCate(1, 8); rightTmp();"></b-tab>
+                      <b-tab 
+                        title-link-class="text-success"
+                        title="티바나" 
+                        @click="seperateCate(1, 9); rightTmp();"></b-tab>
+                      <b-tab
+                        title-link-class="text-success"
+                        title="브루드 커피"
+                        @click="seperateCate(1, 10); rightTmp();"
+                      ></b-tab>
+                      <b-tab 
+                        title-link-class="text-success"
+                        title="기타" 
+                        @click="seperateCate(1, 11); rightTmp();"></b-tab>
+                      <b-tab
+                        title-link-class="text-success"
+                        title="병음료"
+                        @click="seperateCate(1, 12); rightTmp();"
+                      ></b-tab>
 
-                    <br /><br />
 
-                    <div class="row">
-                      <div
-                        v-for="(menu, i) in menusCate"
-                        :key="i"
-                        class="col-4"
-                      >
+                      <div class="row overflow container-fluid">
+                        <div
+                          v-for="(menu, i) in menusCateTmp"
+                          :key="i"
+                          class="col-4"
+                        >
                           <div
                             class="m-3 hover"
                             v-b-toggle.sidebar-right
                             @click="GetMenuId(menu)"
                           >
-                            <div>
+                            <div style = "text-align: center;">
                               <img
-                                style="width: 100%"
+                                style="width: 70%"
                                 :src="menu.image"
-                                class="rounded-circle image"
+                                class="rounded image mb-2"
                               />
                             </div>
-                            <div style="text-align: center; font-size: 20px">
+                            <div style="text-align: center; font-size: 30px">
                               {{ menu.name }}
                             </div>
-                            <div style="text-align: center; font-size: 20px">
-                              {{ menu.price }}원
+                            <div style="text-align: center; font-size: 30px" class = "text-danger">
+                              {{ numberWithCommas(menu.price) }}원
                             </div>
                           </div>
+                          <div v-if = "menusCate.length > 9 && menusCate.length > aa+9">
+                            <img src="@/assets/img/right.png" style="height: 60px;" class = "cursor right" @click="right()">
+                          </div>
+                          <div v-if = "aa >= 9">
+                            <img src="@/assets/img/left.png" style="height: 60px;" class = "cursor left" @click="left()">
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </b-tabs>
+
+
+                    </b-tabs>
+                  </div>
                 </div>
               </b-tab>
-              <b-tab @click="seperateCate(2, 1)" title="푸드">
+              <b-tab 
+                title-link-class="text-dark"
+                @click="seperateCate(2, 1); rightTmp();" 
+                title="푸드">
                 <div>
-                  <b-tabs content-class="mt-3" align="center" pills style="font-size: 20px">
-                    <b-tab title="브레드" @click="seperateCate(2, 1)"></b-tab>
-                    <b-tab title="케이크" @click="seperateCate(2, 2)"></b-tab>
-                    <b-tab title="샌드위치&샐러드" @click="seperateCate(2, 3)"></b-tab>
-                    <b-tab title="따뜻한 푸드" @click="seperateCate(2, 4)"></b-tab>
-                    <b-tab title="과일&요거트" @click="seperateCate(2, 5)"></b-tab>
-                    <b-tab title="스낵&미니디저트" @click="seperateCate(2, 6)"></b-tab>
-                    <b-tab title="아이스크림" @click="seperateCate(2, 7)"></b-tab>
-
-                    <div class="row">
+                  <b-tabs
+                    content-class="mt-3"
+                    align="center"
+                    style="font-size: 30px"
+                  >
+                    <b-tab
+                      title-link-class="text-success"
+                      title="브레드" 
+                      @click="seperateCate(2, 1); rightTmp();"></b-tab>
+                    <b-tab 
+                      title-link-class="text-success"
+                      title="케이크" 
+                      @click="seperateCate(2, 2); rightTmp();"></b-tab>
+                    <b-tab
+                      title-link-class="text-success"
+                      title="샌드위치&샐러드"
+                      @click="seperateCate(2, 3); rightTmp();"
+                    ></b-tab>
+                    <b-tab
+                      title-link-class="text-success"
+                      title="따뜻한 푸드"
+                      @click="seperateCate(2, 4); rightTmp();"
+                    ></b-tab>
+                    <b-tab
+                      title-link-class="text-success"
+                      title="과일&요거트"
+                      @click="seperateCate(2, 5); rightTmp();"
+                    ></b-tab>
+                    <b-tab
+                      title-link-class="text-success"
+                      title="스낵&미니디저트"
+                      @click="seperateCate(2, 6); rightTmp();"
+                    ></b-tab>
+                    <b-tab
+                      title-link-class="text-success"
+                      title="아이스크림"
+                      @click="seperateCate(2, 7); rightTmp();"
+                    ></b-tab>
+                    <div class="row overflow container-fluid">
                       <div
-                        v-for="menu in menusCate"
+                        v-for="menu in menusCateTmp"
                         :key="menu.id"
                         class="col-4"
                       >
@@ -161,32 +300,41 @@
                           v-b-toggle.sidebar-right
                           @click="GetMenuId(menu)"
                         >
-                          <div>
+                          <div style="text-align: center;">
                             <img
-                              style="width: 100%"
+                              style="width: 70%"
                               :src="menu.image"
-                              class="rounded-circle image"
+                                class="rounded image mb-2"
                             />
                           </div>
-                          <div style="text-align: center; font-size: 17px">
+                          <div style="text-align: center; font-size: 30px">
                             {{ menu.name }}
                           </div>
-                          <div style="text-align: center; font-size: 17px">
-                            {{ menu.price }}원
+                          <div style="text-align: center; font-size: 30px" class = "text-danger">
+                            {{ numberWithCommas(menu.price) }}원
                           </div>
                         </div>
+                        <div v-if = "menusCate.length > 9 && menusCate.length > aa+9">
+                            <img src="@/assets/img/right.png" style="height: 60px;" class = "cursor right" @click="right()">
+                          </div>
+                          <div v-if = "aa >= 9">
+                            <img src="@/assets/img/left.png" style="height: 60px;" class = "cursor left" @click="left()">
+                          </div>
                       </div>
                     </div>
+
                   </b-tabs>
                 </div>
               </b-tab>
             </b-tabs>
-            <b-button @click="purchase()">결제</b-button>
           </b-card>
+      <b-button class="tmp" variant ="success" style="width: 100%; height:60px; font-size:20px;" v-b-toggle.sidebar-right>결제하기</b-button>
         </div>
       </div>
     </div>
+  <footer>푸터</footer>
   </div>
+  
 </template>
 
 <script>
@@ -212,8 +360,10 @@ export default {
     return {
       test: true,
       menusCate: {},
+      menusCateTmp:{},
       menuAll: {},
       y: 1,
+      aa: 0,
       basket: [],
       basketRecent: {},
       modalShow: false,
@@ -232,7 +382,7 @@ export default {
       var IMP = window.IMP;
       var msg;
       var b = this.basket;
-      
+
       b[0].uid = this.uid;
       console.log(b);
       // var tempUid = this.uid;
@@ -251,7 +401,7 @@ export default {
           buyer_addr: "서울특별시 강남구 삼성동",
           buyer_postcode: "123-456",
         },
-        function(rsp) {
+        function (rsp) {
           if (rsp.success) {
             var msg = "결제가 완료되었습니다.";
             alert(msg);
@@ -265,7 +415,6 @@ export default {
               .post(baseURL + "/create/order", b)
               .then((response) => {
                 x.$router.push("/");
-              
               })
               .catch((err) => {
                 console.log(err);
@@ -278,7 +427,6 @@ export default {
         }
       );
     },
-
     authUser() {
       console.log("method - authUser");
       const axiosConfig = {
@@ -289,12 +437,7 @@ export default {
       axios
         .post(`${constants.baseUrl}/authuser`, "", axiosConfig)
         .then((res) => {
-          console.log(res.data.uid);
           this.uid = res.data.uid;
-          console.log("logger - authUser");
-          console.log(this.uid);
-          console.log(res.data.uid);
-
           this.GetMenuListRecent();
         })
         .catch((err) => console.log(err));
@@ -310,28 +453,47 @@ export default {
     GetMenuId(res) {
       this.basketPrice += res.price;
       this.basket.push(res);
-      // console.log(this.basket);
-    },
-    GetMenuList() {
-      axios
-        .post(baseURL + "/create/order", this.basket)
-        .then(() => {
-          console.log(this.basket);
-        })
-        .catch((err) => console.log(err.response));
     },
     GetMenuListRecent() {
       axios
         .get(`${baseURL}/order/mymenu`, { params: { uid: this.uid, sid: 1 } })
         .then((res) => {
           this.basketRecent = res.data;
-          console.log(this.basketRecent);
         })
         .catch((err) => console.log(err.response));
     },
     seperateCate(a, b) {
       var tmpCate = this.menuAll.filter((cate) => cate.category1 == a);
       this.menusCate = tmpCate.filter((cate) => cate.category2 == b);
+      this.aa = 0;
+    },
+    DeleteBasket(Menu) {
+      var tmpBasket = this.basket;
+      const a = Menu.menuid;
+      function findMenuid(bb) {
+        return bb.menuid === a;
+      }
+      var i = tmpBasket.findIndex(findMenuid);
+      this.basketPrice -= Menu.price;
+      tmpBasket = tmpBasket.splice(i, 1);
+    },
+    okcancel() {
+      this.$router.push("/");
+    },
+    numberWithCommas(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    },
+    rightTmp(){
+      this.menusCateTmp = this.menusCate.slice(this.aa,this.aa+9);
+      console.log(this.menusCateTmp);
+    },
+    right(){
+      this.aa += 9;
+      this.rightTmp();
+    },
+    left(){
+      this.aa -=9;
+      this.rightTmp();
     }
   },
 };
@@ -342,9 +504,57 @@ export default {
 * {
   font-family: "Jua", sans-serif;
   font-size: 13px;
+  line-height : 35px;
 }
 .hover:hover {
   background-color: #eee;
   cursor: pointer;
 }
+.click:hover {
+  /* background-color: #ff0040; */
+  cursor: pointer;
+}
+.cursor{
+  cursor: pointer;
+}
+.overflow {
+  height: 80vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+footer {
+  width: 100%;
+  height: 90px;
+  background: #ddd;
+  margin-top: auto;
+}
+.wrap {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.tab-pills > .active > a,
+.tab-pills > .active > a:hover {
+  background-color: red;
+}
+.tmp {
+  position: fixed;
+  bottom: 0;
+}
+.right{
+  position: fixed;
+  z-index: 160;
+  bottom: 630px;
+  right: 8px;
+}
+.left{
+  position: fixed;
+  z-index: 160;
+  bottom: 630px;
+  left: 5px;
+}
+p.test {word-break: break-all;}
+
 </style>

@@ -106,6 +106,7 @@ export default {
       show: true,
     };
   },
+  
   created(){
 
   },
@@ -118,7 +119,7 @@ export default {
         axios
           .put(`${baseURL}/admin/updatemenu`, saveMenu)
           .then((res) => {
-            console.log(res);
+            // console.log(res);
           })
           .catch((err) => {
             console.log(err);
