@@ -14,10 +14,23 @@
       outlined
       responsive="sm"
     >
-
-      <template #cell(actions)="row" style="width:200px;">
-        <b-btn class="btn-margin" pill id="show-btn" block variant="info" @click="showModal(row.item.menuid)">메뉴 수정</b-btn>
-        <b-btn class="btn-margin" pill variant="outline-danger" @click="deleteMenu(row.item.menuid)">메뉴 삭제</b-btn>
+      <template #cell(actions)="row" style="width: 200px">
+        <b-btn
+          class="btn-margin"
+          pill
+          id="show-btn"
+          block
+          variant="info"
+          @click="showModal(row.item.menuid)"
+          >메뉴 수정</b-btn
+        >
+        <b-btn
+          class="btn-margin"
+          pill
+          variant="outline-danger"
+          @click="deleteMenu(row.item.menuid)"
+          >메뉴 삭제</b-btn
+        >
         <!-- <b-btn id="show-btn" @click="test">메뉴 수정</b-btn> -->
       </template>
 
@@ -46,7 +59,7 @@
 import axios from "axios";
 import constants from "../../lib/constants";
 import AddMenu from "@/components/admin/AddMenu.vue";
-import UpdateMenu from "@/components/admin/UpdateMenu.vue"
+import UpdateMenu from "@/components/admin/UpdateMenu.vue";
 const baseURL = constants.baseUrl;
 
 export default {
@@ -57,7 +70,6 @@ export default {
   },
   data() {
     return {
-
       fields: [
         { key: "actions", label: "Actions" },
         {
@@ -67,7 +79,7 @@ export default {
         {
           key: "menuid",
           label: "메뉴 번호",
-          sortable: true
+          sortable: true,
         },
         {
           key: "name",
@@ -90,7 +102,6 @@ export default {
           key: "kcal",
           // label:'kcal'
           sortable: true,
-
         },
         {
           key: "category1",
@@ -105,12 +116,11 @@ export default {
       currentPage: 1,
       menuAll: {},
       items: [],
-      menuinfo:{},
+      menuinfo: {},
     };
   },
   created() {
-    this.isAdmin()
-    // console.log("logger - Create DashBoard");
+    this.isAdmin();
     this.getMenuList(); //로딩시 메뉴 가져오기
   },
   computed: {
@@ -119,7 +129,7 @@ export default {
     },
   },
   methods: {
-        isAdmin() {
+    isAdmin() {
       const axiosConfig = {
         headers: {
           jwtToken: `${this.$cookies.get("Admin-Auth-Token")}`,
@@ -128,9 +138,7 @@ export default {
       axios
         .post(`${baseURL}/admin/isAdmin`, "", axiosConfig)
         .then((res) => {
-          // console.log(res);
           if (res.data == false) {
-            // this.$router.push({ name: "dashboard" });
             this.$router.push({ name: "forbidden" });
           }
         })
@@ -146,7 +154,6 @@ export default {
       axios
         .get(`${baseURL}/branch/menu`, { params: { sid: 1 } })
         .then((res) => {
-          // console.log(res);
           this.items = res.data.object;
         })
         .catch((err) => console.log(err.response));
@@ -155,19 +162,17 @@ export default {
       axios
         .get(`${baseURL}/admin/menuinfo`, { params: { menuid: mid } })
         .then((res) => {
-          // console.log(res);
           this.menuinfo = res.data;
         })
         .catch((err) => console.log(err.response));
     },
 
     deleteMenu(mid) {
-      console.log(mid)
       axios
-        .delete(`${baseURL}/admin/deletemenu`, { params: { menuid: mid  } })
+        .delete(`${baseURL}/admin/deletemenu`, { params: { menuid: mid } })
         .then((res) => {
           // console.log(res);
-          alert('삭제되었습니다.')
+          alert("삭제되었습니다.");
         })
         .catch((err) => {
           console.log(err);
@@ -182,8 +187,8 @@ export default {
   margin: 100px auto;
   padding: 20px;
 }
-.btn-margin{
-  margin:15px 0;
+.btn-margin {
+  margin: 15px 0;
 }
 img {
   width: 100px;

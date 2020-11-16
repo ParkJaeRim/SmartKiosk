@@ -163,22 +163,22 @@ def predict(X_img_path, knn_clf=None, model_path=None, distance_threshold=0.4):
 
 
 if __name__ == "__main__":
-    base_path = "/var/lib/jenkins/workspace/sucheol\'s/face_classifier/"
+    base_path = "/home/ubuntu/s03p31b107/face_classifier"
     flag = False
     # STEP 1: Train the KNN classifier and save it to disk
     # Once the model is trained and saved, you can skip this step next time.
-    classifier = train(base_path, model_save_path="trained_knn_model.csv", n_neighbors=1)
+    # classifier = train(base_path, model_save_path="trained_knn_model.csv", n_neighbors=1)
 
     # STEP 2: Using the trained classifier, make predictions for unknown images
     cnt = 0
-    for image_file in os.listdir(base_path + "test/"):
-        full_file_path = os.path.join(base_path+"test/", image_file)
+    for image_file in os.listdir(base_path+"/test/"):
+        full_file_path = os.path.join(base_path+"/test/", image_file)
 
 
         # Find all people in the image using a trained classifier model
         # Note: You can pass in either a classifier file name or a classifier model instance
     
-        predictions = predict(full_file_path, model_path=base_path + "trained_knn_model.csv")
+        predictions = predict(full_file_path, model_path="/home/ubuntu/s03p31b107/face_classifier/trained_knn_model.csv")
         
         # Print results on the console
         for name, (top, right, bottom, left) in predictions:
@@ -190,9 +190,9 @@ if __name__ == "__main__":
     if(cnt<3):
         print("INCORRECT")
     else:
-        print("CORRECT :" , name)
-    shutil.rmtree(base_path + "/test")
-    os.mkdir(base_path + "/test")
+        print("CORRECT:" , name)
+    shutil.rmtree(base_path+"/test/")
+    os.mkdir(base_path+"/test/")
         # if flag:
         #     break
 

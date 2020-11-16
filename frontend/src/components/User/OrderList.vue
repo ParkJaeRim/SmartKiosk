@@ -68,18 +68,15 @@ export default {
   },
   methods: {
     getUserInfo() {
-      // console.log("method - getUserInfo");
-
       const axiosConfig = {
         headers: {
           jwtToken: `${this.$cookies.get("Auth-Token")}`,
         },
       };
-      console.log(axiosConfig);
+
       axios
         .post(`${constants.baseUrl}/authuser`, "", axiosConfig)
         .then((res) => {
-          // console.log(res.data.uid);
           this.form = res.data;
           this.getUserOrderList();
         })
@@ -96,10 +93,6 @@ export default {
           for (var i = 0; i < this.Mymenu.length; i++) {
             const day = this.Mymenu[i][0];
             this.Mymenu[i][0] = day;
-          // for (let i = 0; i < this.Mymenu.length; i++) {
-          //   // var a = this.Mymenu.length-1-i;
-          //   const day = this.MymenuDate[i].orderdate;
-          //   this.Mymenu[i].orderdate = day;
           }
           var tmp = {};
           for (let j = 0; j < this.Mymenu.length; j++) {
@@ -112,21 +105,9 @@ export default {
             }
           }
           this.Mymenu = tmp;
-          console.log(this.Mymenu);
         })
         .catch((err) => console.log(err.response));
     },
-    // getUserOrderList2() {
-    //   axios
-    //     .get(baseURL + "/get/orderlist2", {
-    //       params: { sid: 1, uid: this.form.uid },
-    //     })
-    //     .then((res) => {
-    //       this.MymenuDate = res.data.object;
-    //       this.getUserOrderList();
-    //     })
-    //     .catch((err) => console.log(err.response));
-    // },
   },
 };
 </script>

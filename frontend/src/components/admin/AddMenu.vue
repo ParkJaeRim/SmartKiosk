@@ -166,7 +166,6 @@ export default {
       axios
         .post(`${baseURL}/admin/addmenu`, this.form)
         .then((res) => {
-          // console.log(res);
         })
         .catch((err) => {
           console.log(err);

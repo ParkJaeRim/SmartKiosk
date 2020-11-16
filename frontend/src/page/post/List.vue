@@ -1,5 +1,5 @@
 <template>
-  <div style="height:100vh; overflow: hidden;">
+  <div v-on:click.left="clickEvent()" style="height:100vh; overflow: hidden;" class = "test">
     <div>
       <b-sidebar id="sidebar-right" backdrop title="장바구니" right shadow width=400px>
         <div class="px-2 py-2">
@@ -11,19 +11,18 @@
                 width="140%"
               ></b-img>
             </th>
-            <th class="px-3 py-3 container">
-              <tr style="font-size: 25px">
+            <div class="px-3 py-3 container col-8">
+              <div style="font-size: 25px">
                 {{
                   menu.name
                 }}
-              </tr>
-              <tr>
-                <td style="font-size: 25px;" class = "text-danger">
+              </div>
+                <div style="font-size: 25px;" class = "text-danger">
                 {{
                   numberWithCommas(menu.price)
                 }}원
-                </td>
-                <td>
+                </div>
+                <div style ="text-align:right;" class="col-12">
                   <b-icon
                   icon="x-circle"
                   scale="2"
@@ -31,9 +30,11 @@
                   @click="DeleteBasket(menu)"
                   class="click"
                 ></b-icon>
-                </td>
-              </tr>
-            </th>
+                <p>             </p>
+
+                </div>
+            </div>
+ 
             <br /><br />
           </div>
 
@@ -49,7 +50,7 @@
           </th>
           <div>
             <th>
-            <td>
+            <td v-if ="basket!=''">
             <b-button variant ="success" style="width: 190px; height:60px; font-size:20px;" v-b-modal.modal-1>결제하기</b-button>
             </td>
             <td>
@@ -71,17 +72,17 @@
                   </td>
                 </th> 
               </div>
-              <template #modal-footer="{cancel}">
+              <template #modal="{cancel}">
                 <b-button style="width:70px; height:50px; font-size:15px;" variant="danger" @click="cancel()">
                   Cancel
                 </b-button>
                 </template>
             </b-modal>
 
-            <b-modal id="modal-2" centered button-size="lg" @ok="purchase()" style="font-size:50px;">
+            <b-modal id="modal-2" centered button-size="lg" @ok="okcancel()" style="font-size:50px;">
               <p class = "my-4" style="font-size:50px; text-align:center;">정말 취소 하시겠습니까?</p>
-                <template #modal-footer="{ okcancel, cancel }">
-                <b-button style="width:70px; height:50px; font-size:15px;" variant="success" @click="okcancel()">
+                <template #modal="{ ok,cancel }">
+                <b-button style="width:70px; height:50px; font-size:15px;" variant="success" @click="ok()">
                   OK
                 </b-button>
                 <b-button style="width:70px; height:50px; font-size:15px;" variant="danger" @click="cancel()">
@@ -109,7 +110,7 @@
               <b-tab 
               title-link-class="text-dark"
               title="추천">
-                <div>
+                <div class="overflow">
                     <br />
                     <!-- 최근 먹은 메뉴-->
 
@@ -135,7 +136,7 @@
                                 class="rounded image mb-2"
                               />
                             </div>
-                            <div style="text-align: center; font-size: 30px" class = "text-dark">
+                            <div style="text-align: center; font-size: 30px" class = "text-dark test">
                               {{ slide.name }}
                             </div>
                             <div style="text-align: center; font-size: 30px" class = "text-danger">
@@ -169,7 +170,7 @@
                                 class="rounded image mb-2"
                               />
                             </div>
-                            <div style="text-align: center; font-size: 30px" class = "text-dark">
+                            <div style="text-align: center; font-size: 30px" class = "text-dark test">
                               {{ slide.name }}
                             </div>
                             <div style="text-align: center; font-size: 30px" class = "text-danger">
@@ -203,7 +204,7 @@
                                 class="rounded image mb-2"
                               />
                             </div>
-                            <div style="text-align: center; font-size: 30px" class = "text-dark">
+                            <div style="text-align: center; font-size: 30px" class = "text-dark test">
                               {{ slide.name }}
                             </div>
                             <div style="text-align: center; font-size: 30px" class = "text-danger">
@@ -222,7 +223,7 @@
 
               <b-tab 
                 title-link-class="text-dark"      
-                @click="seperateCate(1, 1); rightTmp();" 
+                @click="seperateCate(1, 1); rightTmp(); clickEvent();" 
                 title="음료">
                 <div>
                   <div>
@@ -235,52 +236,52 @@
                       <b-tab
                         title-link-class="text-success"
                         title="콜드 브루"
-                        @click="seperateCate(1, 1); rightTmp();"
+                        @click="seperateCate(1, 1); rightTmp(); clickEvent();"
                       ></b-tab>
                       <b-tab 
                         title-link-class="text-success"
                         title="리저브" 
-                        @click="seperateCate(1, 2); rightTmp();"></b-tab>
+                        @click="seperateCate(1, 2); rightTmp(); clickEvent();"></b-tab>
                       <b-tab
                         title-link-class="text-success"
                         title="에스프레소"
-                        @click="seperateCate(1, 3); rightTmp();"
+                        @click="seperateCate(1, 3); rightTmp(); clickEvent();"
                       ></b-tab>
                       <b-tab 
                         title-link-class="text-success"
                         title="블론드" 
-                        @click="seperateCate(1, 5); rightTmp();"></b-tab>
+                        @click="seperateCate(1, 5); rightTmp(); clickEvent();"></b-tab>
                       <b-tab
                         title-link-class="text-success"
                         title="프라푸치노"
-                        @click="seperateCate(1, 6); rightTmp();"
+                        @click="seperateCate(1, 6); rightTmp(); clickEvent();"
                       ></b-tab>
                       <b-tab
                         title-link-class="text-success"
                         title="블렌디드"
-                        @click="seperateCate(1, 7); rightTmp();"
+                        @click="seperateCate(1, 7); rightTmp(); clickEvent();"
                       ></b-tab>
                       <b-tab 
                         title-link-class="text-success"
                         title="피지오" 
-                        @click="seperateCate(1, 8); rightTmp();"></b-tab>
+                        @click="seperateCate(1, 8); rightTmp(); clickEvent();"></b-tab>
                       <b-tab 
                         title-link-class="text-success"
                         title="티바나" 
-                        @click="seperateCate(1, 9); rightTmp();"></b-tab>
+                        @click="seperateCate(1, 9); rightTmp(); clickEvent();"></b-tab>
                       <b-tab
                         title-link-class="text-success"
                         title="브루드 커피"
-                        @click="seperateCate(1, 10); rightTmp();"
+                        @click="seperateCate(1, 10); rightTmp(); clickEvent();"
                       ></b-tab>
                       <b-tab 
                         title-link-class="text-success"
                         title="기타" 
-                        @click="seperateCate(1, 11); rightTmp();"></b-tab>
+                        @click="seperateCate(1, 11); rightTmp(); clickEvent();"></b-tab>
                       <b-tab
                         title-link-class="text-success"
                         title="병음료"
-                        @click="seperateCate(1, 12); rightTmp();"
+                        @click="seperateCate(1, 12); rightTmp(); clickEvent();"
                       ></b-tab>
 
 
@@ -302,7 +303,7 @@
                                 class="rounded image mb-2"
                               />
                             </div>
-                            <div style="text-align: center; font-size: 30px">
+                            <div style="text-align: center; font-size: 30px" class = "test">
                               {{ menu.name }}
                             </div>
                             <div style="text-align: center; font-size: 30px" class = "text-danger">
@@ -325,7 +326,7 @@
               </b-tab>
               <b-tab 
                 title-link-class="text-dark"
-                @click="seperateCate(2, 1); rightTmp();" 
+                @click="seperateCate(2, 1); rightTmp(); clickEvent();" 
                 title="푸드">
                 <div>
                   <b-tabs
@@ -337,35 +338,35 @@
                     <b-tab
                       title-link-class="text-success"
                       title="브레드" 
-                      @click="seperateCate(2, 1); rightTmp();"></b-tab>
+                      @click="seperateCate(2, 1); rightTmp(); clickEvent();"></b-tab>
                     <b-tab 
                       title-link-class="text-success"
                       title="케이크" 
-                      @click="seperateCate(2, 2); rightTmp();"></b-tab>
+                      @click="seperateCate(2, 2); rightTmp(); clickEvent();"></b-tab>
                     <b-tab
                       title-link-class="text-success"
                       title="샌드위치&샐러드"
-                      @click="seperateCate(2, 3); rightTmp();"
+                      @click="seperateCate(2, 3); rightTmp(); clickEvent();"
                     ></b-tab>
                     <b-tab
                       title-link-class="text-success"
                       title="따뜻한 푸드"
-                      @click="seperateCate(2, 4); rightTmp();"
+                      @click="seperateCate(2, 4); rightTmp(); clickEvent();"
                     ></b-tab>
                     <b-tab
                       title-link-class="text-success"
                       title="과일&요거트"
-                      @click="seperateCate(2, 5); rightTmp();"
+                      @click="seperateCate(2, 5); rightTmp(); clickEvent();"
                     ></b-tab>
                     <b-tab
                       title-link-class="text-success"
                       title="스낵&미니디저트"
-                      @click="seperateCate(2, 6); rightTmp();"
+                      @click="seperateCate(2, 6); rightTmp(); clickEvent();"
                     ></b-tab>
                     <b-tab
                       title-link-class="text-success"
                       title="아이스크림"
-                      @click="seperateCate(2, 7); rightTmp();"
+                      @click="seperateCate(2, 7); rightTmp(); clickEvent();"
                     ></b-tab>
                     <div class="row overflow container-fluid">
                       <div
@@ -385,7 +386,7 @@
                                 class="rounded image mb-2"
                             />
                           </div>
-                          <div style="text-align: center; font-size: 30px">
+                          <div style="text-align: center; font-size: 30px" class = "test">
                             {{ menu.name }}
                           </div>
                           <div style="text-align: center; font-size: 30px" class = "text-danger">
@@ -444,11 +445,12 @@ export default {
       basketRecent: {},
       Recent: {},
       basketPopular: {},
-      basketFoodPopular:{},
+      basketFoodPopular: {},
       modalShow: false,
       basketPrice: 0,
       uid: "",
-      loginCheck : 0,
+      loginCheck: 0,
+      time:90,
     };
   },
   created() {
@@ -456,16 +458,17 @@ export default {
     this.GetMenuInfo();
     this.GetMenuListPopular();
     this.GetMenuListPopular2();
+    this.checkVisitor();
   },
   methods: {
     purchase() {
-      console.log("logger - purchase out of method " + this.uid);
+      // console.log("logger - purchase out of method " + this.uid);
       var IMP = window.IMP;
       var msg;
       var b = this.basket;
 
       b[0].uid = this.uid;
-      console.log(b);
+      // console.log(b);
       // var tempUid = this.uid;
       let x = this;
       IMP.init("imp40062977");
@@ -485,17 +488,18 @@ export default {
         function (rsp) {
           if (rsp.success) {
             var msg = "결제가 완료되었습니다.";
-            alert(msg);
+            // alert(msg);
             msg += "\n고유ID : " + rsp.imp_uid;
             msg += "\n상점 거래ID : " + rsp.merchant_uid;
             msg += "\n결제 금액 : " + rsp.paid_amount + "원";
 
-            console.log(b);
-            alert("logger - purchase inner " + b);
+            // console.log(b);
+            // alert("logger - purchase inner " + b);
             axios
               .post(baseURL + "/create/order", b)
               .then((response) => {
-                x.$router.push("/");
+                this.$cookies.remove("Auth-Token");
+                x.$router.push({name: "kioskstart"});
               })
               .catch((err) => {
                 console.log(err);
@@ -504,7 +508,7 @@ export default {
             var msg = "결제에 실패하였습니다.";
             msg += "에러내용 : " + rsp.error_msg;
           }
-          alert(msg);
+          // alert(msg);
         }
       );
     },
@@ -523,7 +527,7 @@ export default {
             this.GetMenuListRecent();
           })
           .catch((err) => console.log(err));
-      }else{
+      } else {
         this.loginCheck = 0;
       }
     },
@@ -583,7 +587,8 @@ export default {
       tmpBasket = tmpBasket.splice(i, 1);
     },
     okcancel() {
-      this.$router.push("/");
+      this.$cookies.remove("Auth-Token");
+      this.$router.push({name: "kioskstart"});
     },
     numberWithCommas(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -602,14 +607,29 @@ export default {
     recent() {
       this.Recent = this.basketRecent.slice(0, 3);
     },
+    checkVisitor(){
+      tmp();
+      var x = this;
+      function tmp(){
+        setTimeout(function(){
+          if(x.time > 0){
+            x.time -= 2;
+            tmp();
+          }else{
+            x.$router.push({name: "kioskstart"});
+          }
+        }, 1000);
+      }
+    },
+    clickEvent(){
+      this.time = 90;
+    }
   },
 };
 </script>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Jua&display=swap");
 * {
-  font-family: "Jua", sans-serif;
   font-size: 13px;
   line-height: 35px;
 }
@@ -652,8 +672,8 @@ export default {
   bottom: 630px;
   left: 5px;
 }
-p.test {
-  word-break: break-all;
+.test {
+  word-break: keep-all;
 }
 
 .tmp {
@@ -680,9 +700,6 @@ p.test {
   z-index: 160;
   bottom: 630px;
   left: 5px;
-}
-p.test {
-  word-break: break-all;
 }
 .divclass {
   max-width: 80%;

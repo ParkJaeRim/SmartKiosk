@@ -1,7 +1,6 @@
 package com.web.blog.dao.orderlist;
 
 import java.util.*;
-import java.sql.Date;
 
 import com.web.blog.model.orderlist.Orderlist;
 import org.springframework.data.jpa.repository.JpaRepository;

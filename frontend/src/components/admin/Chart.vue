@@ -5,15 +5,13 @@
 import axios from "axios";
 import constants from "@/lib/constants";
 import Chart from "chart.js";
-// import planetChartData from "../../chart-data";
 
 const baseURL = constants.baseUrl;
-// const ctx = document.getElementById("planet-chart");
+
 export default {
   name: "Chart",
   data() {
     return {
-      // planetChartData: planetChartData,
       type: "line",
       data: {
         labels: [
@@ -32,7 +30,7 @@ export default {
         ],
         datasets: [
           {
-            // another line graph
+
             label: "월별 매출액(천원)",
             data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             backgroundColor: ["rgba(71, 183,132,.5)"],
@@ -103,7 +101,6 @@ export default {
           for (let i = 0; i < res.data.length; i++) {
             this.data.datasets[1].data[res.data[i][0] - 1] = res.data[i][1];
           }
-          // this.createChart("planet-chart");
         })
         .catch((err) => {
           console.log(err);

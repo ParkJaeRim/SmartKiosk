@@ -93,7 +93,6 @@ export default {
       axios
         .get(`${baseURL}/admin/getpayment`)
         .then((res) => {
-            // console.log(res)
           this.items = res.data;
         })
         .catch((err) => {

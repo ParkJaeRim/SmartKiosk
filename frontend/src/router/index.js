@@ -9,6 +9,7 @@ import Join from '../page/user/Join.vue'
 import MyPage from '../page/user/MyPage.vue'
 import UserUpdate from '../page/user/UserUpdate.vue'
 import UserInfo from '../components/User/UserInfo.vue'
+import FaceCheck from '../page/post/FaceCheck.vue'
 import OrderList from '../components/User/OrderList.vue'
 
 
@@ -81,6 +82,11 @@ export default new Router({
       path: '/kiosk/qrcheck',
       name: constants.URL_TYPE.POST.QRCHECK,
       component: QrCheck,
+    },
+    { 
+      path: '/kiosk/facecheck',
+      name: constants.URL_TYPE.POST.FACECHECK,
+      component: FaceCheck,
     },
     { // 마이페이지
       path: '/user/mypage',

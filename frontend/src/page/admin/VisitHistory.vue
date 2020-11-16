@@ -49,7 +49,7 @@ export default {
           label: "방문 시각",
         },
       ],
-      perPage: 3,
+      perPage:10,
       currentPage: 1,
       items: [],
     };

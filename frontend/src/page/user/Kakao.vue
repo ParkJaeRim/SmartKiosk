@@ -40,8 +40,6 @@ export default {
     },
     kakaojoin() {
       let x = this;
-      // var kakaotempToken = "";
-      var a = 0;
       var kakaoToken = "";
       Kakao.Auth.login({
         success: function(authObj) {
@@ -65,7 +63,6 @@ export default {
                   }
                 })
                 .catch((err) => console.log(err.response));
-              console.log("hh");
             },
           });
         },
@@ -74,9 +71,6 @@ export default {
           alert(JSON.stringify(error));
         },
       });
-      setTimeout(() => {
-        console.log(a);
-      }, 5);
     },
 
     logout: function() {

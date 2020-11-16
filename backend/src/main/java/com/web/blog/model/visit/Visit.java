@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
+import java.time.LocalDateTime;
 @Entity
 @Data
 @NoArgsConstructor
@@ -17,5 +17,5 @@ public class Visit {
     private int vid;
     private int uid;
     private String tel;
-    private String currenttime;
+    private LocalDateTime currenttime;
 }

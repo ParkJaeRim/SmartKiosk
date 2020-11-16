@@ -32,6 +32,7 @@ export default {
             LIST: "list",
             KIOSKMAIN: "kisokmain",
             KIOSKSTART: "kioskstart",
+            FACECHECK: "facecheck",
             QRCHECK: "qrcheck",
         },
         ERROR:{

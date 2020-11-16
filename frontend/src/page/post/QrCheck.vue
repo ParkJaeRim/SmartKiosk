@@ -63,7 +63,6 @@ export default {
     });
     self.scanner.addListener("scan", function (content, image) {
       self.scans.unshift({ date: +Date.now(), content: content });
-      console.log("hi");
       self.UnRegistered();
       self.scanner.stop()
       self.$router.push('main')
@@ -87,7 +86,6 @@ export default {
       axios
         .post(`${baseURL}/qr`)
         .then((res) => {
-        //   console.log(res);
         })
         .catch((err) => {
           console.log(err);

@@ -5,7 +5,6 @@
 import axios from "axios";
 import constants from "@/lib/constants";
 import Chart from "chart.js";
-// import planetChartData from "../../chart-data";
 
 const baseURL = constants.baseUrl;
 export default {
@@ -91,7 +90,6 @@ export default {
       axios
         .get(`${baseURL}/admin/popularmenu`)
         .then((res) => {
-          // console.log(res)
           const label = [];
           const tempData = [];
           for (let i = 0; i < res.data.length; i++) {

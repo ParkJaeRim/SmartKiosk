@@ -75,7 +75,7 @@ class FaceClassifier():
             aligned_image = face_alignment_dlib.get_aligned_face(self.predictor, face_image)
 
             filename = now.strftime('%Y%m%d_%H%M%S.%f')[:-3] + '.png'
-            pathname = os.path.join( base_path+"train/" + args.capture, filename)
+            pathname = os.path.join( "/home/ubuntu/learningFile/train/" + args.capture, filename)
 
             tmp += 1
             cv2.imwrite(pathname, aligned_image)

@@ -191,7 +191,7 @@ export default {
         .post(`${constants.baseUrl}/account/signup`, user)
         .then((Response) => {
           kakaoToken = Response.data;
-          console.log(Response.data);
+          // console.log(Response.data);
           this.$cookies.set("Auth-Token", kakaoToken);
           axios
             .get(baseURL+'/account/justlearn')
@@ -228,7 +228,7 @@ export default {
       this.imagebase64.push(dataURL);
       setTimeout(() => {
         if (cnt == this.howmany - 1) {
-          console.log(this.imagebase64);
+          // console.log(this.imagebase64);
           axios
             .post(baseURL + "/imageset", this.imagebase64)
             .then((response) => {

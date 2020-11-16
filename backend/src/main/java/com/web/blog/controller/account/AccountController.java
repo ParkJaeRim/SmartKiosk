@@ -54,6 +54,9 @@ import java.util.*;
 @CrossOrigin(origins = { "*" })
 @RestController
 public class AccountController {
+    // static String Paths ="C:/Users/multicampus/Desktop/pjt3//s03p31b107/";
+    static String awsPath ="/home/ubuntu/s03p31b107/face_classifier";
+    static String execPath = "/home/ubuntu/Jenkins/workspace/alonso/face_classifier";
 
     @Autowired
     UserDao userDao;
@@ -140,19 +143,19 @@ public class AccountController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }  
+    }
 
     @GetMapping("/account/justlearn")
     public void justlearning() {
         ResponseEntity<?> response = null;
-        String[] command = new String[8];
 
-        command = new String[2];
+        String[] command = new String[2];
         command[0] = "python3";
-        command[1] = "/var/lib/jenkins/workspace/sucheol\'s/face_classifier/only_train.py";
+        command[1] = execPath+"/only_train.py";
         try {
             ByteArrayOutputStream out = execPython(command);
             String extact_result = out.toString();
+            System.out.println(extact_result);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -170,8 +173,8 @@ public class AccountController {
                 FileOutputStream fos;
                 try {
 
-                    String target_path = "/var/lib/jenkins/workspace/sucheol\'s/face_classifier/train/" + images[0].getFileBase64()
-                            + "/";
+                    String target_path = awsPath+"/train/"
+                            + images[0].getFileBase64() + "/";
 
                     File Folder = new File(target_path);
 
@@ -183,7 +186,6 @@ public class AccountController {
                             e.getStackTrace();
                         }
                     }
-
                     File target = new File(target_path + i + ".jpg");
                     target.createNewFile();
                     fos = new FileOutputStream(target);
@@ -202,83 +204,93 @@ public class AccountController {
         return response;
     };
 
+    @PostMapping("/decoding")
+    public ResponseEntity<?> kioskDecoding(@Valid @RequestBody Images[] images) {
+    // public ResponseEntity<?> kioskDecoding() {
+        System.out.println("HIIIIIIIII");
+        for (int i = 0; i < images.length; i++) {
+            String base64Str = new String(images[i].getFileBase64());
+            String data = base64Str.split(",")[1]; // jin
 
-    @GetMapping("/kiosk/recog")
+            byte decode[] = Base64.decodeBase64(data);
+            FileOutputStream fos;
+            try {
+
+                // String target_path = Paths+"face_classifier/test/";
+                String target_path = awsPath+"/test/";
+
+                File Folder = new File(target_path);
+
+                // 해당 디렉토리가 없을경우 디렉토리를 생성합니다.
+                if (!Folder.exists()) {
+                    try {
+                        Folder.mkdir(); // 폴더 생성합니다.
+                    } catch (Exception e) {
+                        e.getStackTrace();
+                    }
+                }
+                File target = new File(target_path + i + ".jpg");
+                target.createNewFile();
+                fos = new FileOutputStream(target);
+                fos.write(decode);
+                fos.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        ResponseEntity<?> response = null;
+
+        response = new ResponseEntity<>(null, HttpStatus.OK);
+
+        return response;
+    };
+
+    @PostMapping("/kiosk/recog")
     @ApiOperation(value = "회원일 때 얼굴 인식")
     public ResponseEntity<?> recog() {
         ResponseEntity<?> response = null;
         BasicResponse result = new BasicResponse();
-        String[] command = new String[8];
         StringBuffer res = new StringBuffer();
-       
-        command[0] = "python";
-        command[1] = "/var/lib/jenkins/workspace/sucheol\'s/face_classifier/take_pic.py";
-        command[2] = "0";
-        command[3] = "-d";
-        command[4] = "-S";
-        command[5] = "0.1";
-        command[6] = "-c";
-        command[7] = "a";
 
+        String[] command = new String[2];
+        command[0] = "python3";
+        // command[1] =
+        // "C:\\Users\\multicampus\\Desktop\\project3\\s03p31b107\\face_classifier\\face_recognition_mlp.py";
+        command[1] = execPath+"/face_recognition_knn.py";
         try {
             ByteArrayOutputStream out = execPython(command);
             String extact_result = out.toString();
-            System.out.println(extact_result);
+
             for (int i = 0; i < extact_result.length(); i++) {
                 char c = extact_result.charAt(i);
                 if (c == '\n' || c == '\r') {
                     break;
                 } else if (c != ' ') {
-                    // res.append(c);
+                    res.append(c);
                 }
             }
 
-            command = new String[2];
-            command[0] = "python";
-            // command[1] =
-            // "C:\\Users\\multicampus\\Desktop\\project3\\s03p31b107\\face_classifier\\face_recognition_mlp.py";
-            command[1] = "/var/lib/jenkins/workspace/sucheol\'s/face_classifier/face_recognition_knn.py";
-            try {
-                out = execPython(command);
-                extact_result = out.toString();
-                
-                for (int i = 0; i < extact_result.length(); i++) {
-                    char c = extact_result.charAt(i);
-                    if (c == '\n' || c == '\r') {
-                        break;
-                    } else if (c != ' ') {
-                        res.append(c);
-                    }
-                }
+            if (res.toString().split(":")[0].equals("CORRECT")) {
+                result.data = "가입된 유저입니다.";
+                result.object = res.toString().split(":")[1];
+                Visit v = new Visit();
+                v.setTel(userDao.findUserByUid(Integer.parseInt(res.toString().split(":")[1])).get().getTel());
+                v.setUid(Integer.parseInt(res.toString().split(":")[1]));
+                visitDao.save(v);
 
-                if (res.toString().split(":")[0].equals("CORRECT ")) {
-                    result.data = "가입된 유저입니다.";
-                    result.object = res.toString().split(":")[1];
-                    Visit v = new Visit();
-                    Date date = Calendar.getInstance().getTime();  
-                    DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");  
-                    String strDate = dateFormat.format(date);  
-                    v.setCurrenttime(strDate);
-                    v.setTel(userDao.findUserByUid(Integer.parseInt(res.toString().split(":")[1])).get().getTel());
-                    visitDao.save(v);
-
-                } else {
-                    result.data = "찾을 수 없는 유저입니다.";
-                    result.object = "Unknown";
-                }
-
-                final Checkvisitor addvisitor = new Checkvisitor();
-                addvisitor.setUid(result.object.toString());
-                final Checkvisitor saveOrderlist = checkvisitorDao.save(addvisitor);
-
-            } catch (Exception e) {
-                e.printStackTrace();
+            } else {
+                result.data = "찾을 수 없는 유저입니다.";
+                result.object = "Unknown";
             }
+
+            final Checkvisitor addvisitor = new Checkvisitor();
+            addvisitor.setUid(result.object.toString());
+            checkvisitorDao.save(addvisitor);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
         System.out.println(result.data);
         response = new ResponseEntity<>(result, HttpStatus.OK);
@@ -286,19 +298,20 @@ public class AccountController {
 
     }
 
+    @Transactional
     @GetMapping("/tracking/start")
     public ResponseEntity<?> trackingst(@RequestParam(required = true) String tid) {
         ResponseEntity<?> response = null;
         BasicResponse result = new BasicResponse();
         String[] command = new String[3];
-        
+
         command[0] = "python3";
         // command[1] =
         // "C:\\Users\\multicampus\\Desktop\\project3\\s03p31b107\\face_classifier\\face_recognition_mlp.py";
         // command[1] = "C:\\do\\face_classifier\\face_recognition_knn.py";
-        command[1] = "/var/lib/jenkins/workspace/sucheol\'s/darknet/python/darknet_2.py";
+        command[1] = "/home/team7/s03p31b107/darknet/python/darknet_2.py";
         command[2] = tid;
-        
+
         try {
             ByteArrayOutputStream out = execPython(command);
             System.out.println(out);
@@ -310,23 +323,26 @@ public class AccountController {
                 } else if (c != ' ') {
                 }
             }
-            
-            result.data = extact_result.substring(extact_result.indexOf("$start")+6, extact_result.indexOf("$end")-1);
+
+            checkvisitorDao.deleteByUid(tid);
+            result.data = extact_result.substring(extact_result.indexOf("$start") + 6,
+                    extact_result.indexOf("$end") - 1);
             response = new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         return response;
-        
+
     }
-    
-    @Transactional
+
     @GetMapping("/tracking")
     @ApiOperation(value = "트래킹")
     public Object tracking(@RequestParam(required = true) String tid) {
-        checkvisitorDao.deleteByUid(tid);
         String token = null;
+        if (tid.equals("Unknown")) {
+            return new ResponseEntity<>("Unknown", HttpStatus.ACCEPTED);
+        }
         try {
             Optional<User> userOpt = userDao.findUserByUid(Integer.parseInt(tid));
             if (userOpt.isPresent()) {
@@ -350,16 +366,16 @@ public class AccountController {
     @ApiOperation(value = "방문자 확인")
     public Object visitor() {
 
-    List<Checkvisitor> visitorlist = checkvisitorDao.findAll();
+        List<Checkvisitor> visitorlist = checkvisitorDao.findAll();
 
-    ResponseEntity<Object> response = null;
-    
-    BasicResponse result = new BasicResponse();
-    result.status = true;
-    result.data = "방문자 확인";
-    result.object = visitorlist;
-    response = new ResponseEntity<>(result, HttpStatus.OK);
-    return response;
+        ResponseEntity<Object> response = null;
+
+        BasicResponse result = new BasicResponse();
+        result.status = true;
+        result.data = "방문자 확인";
+        result.object = visitorlist;
+        response = new ResponseEntity<>(result, HttpStatus.OK);
+        return response;
     }
 
     public static ByteArrayOutputStream execPython(String[] command) throws IOException, InterruptedException {
