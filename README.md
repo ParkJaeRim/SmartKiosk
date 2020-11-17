@@ -80,7 +80,7 @@
 <br>
 
 ## Web Architecture
-![기술스택](README.img/Web Architecture.JPG.png)
+<img src="https://github.com/ParkJaeRim/SmartKiosk/blob/main/README.img/%EA%B8%B0%EC%88%A0%20%EC%8A%A4%ED%83%9D.JPG?raw=true">
 
 #### 이를 통해 키완얼 고객의 얼굴을 학습하여 최고의 맞춤 컨텐츠를 제공합니다!
 
@@ -92,7 +92,7 @@
 
 ### 2. 객체탐지 :eyes:
 
-<img src="https://lab.ssafy.com/s03-final/s03p31b107/raw/master/README.img/%EC%9B%80%EC%A7%81%EC%9E%84.gif" width="50%" height="50%">
+<img src="https://github.com/ParkJaeRim/SmartKiosk/blob/main/README.img/%EC%9B%80%EC%A7%81%EC%9E%84.gif?raw=true" width="50%" height="50%">
 
 
 
@@ -124,12 +124,12 @@
 # 구조도 🔧 
 
 ### 흐름도
-<img src="https://lab.ssafy.com/s03-final/s03p31b107/raw/master/README.img/%ED%9D%90%EB%A6%84%EB%8F%84.png" width="50%" height="50%">
+<img src="https://github.com/ParkJaeRim/SmartKiosk/blob/main/README.img/%ED%9D%90%EB%A6%84%EB%8F%84.png?raw=true" width="50%" height="50%">
 
 ### ERD
 [ERD Diagram](https://www.erdcloud.com/d/gaP6MY5NPWYAGpX7J)
 
-<img src="https://lab.ssafy.com/s03-final/s03p31b107/raw/master/README.img/ERD.JPG" width="50%" height="50%">
+<img src="https://github.com/ParkJaeRim/SmartKiosk/blob/main/README.img/ERD.JPG?raw=true" width="50%" height="50%">
 
 
 ### 기술 스택
@@ -143,9 +143,9 @@
 
 ### Web Architecture / Embedded System
 
-<img src= "https://lab.ssafy.com/s03-final/s03p31b107/raw/master/README.img/Web%20Architecture.JPG" width="40%" height="40%">
+<img src= "https://github.com/ParkJaeRim/SmartKiosk/blob/main/README.img/Web%20Architecture.JPG?raw=true" width="40%" height="40%">
 
-<img src="https://lab.ssafy.com/s03-final/s03p31b107/raw/master/README.img/Embedded%20System.JPG" width="40%" height="40%">
+<img src="https://github.com/ParkJaeRim/SmartKiosk/blob/main/README.img/Embedded%20System.JPG?raw=true" width="40%" height="40%">
 
 <br>
 <hr>
