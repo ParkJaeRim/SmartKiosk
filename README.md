@@ -79,8 +79,6 @@
 
 <br>
 
-## Web Architecture
-<img src="https://github.com/ParkJaeRim/SmartKiosk/blob/main/README.img/%EA%B8%B0%EC%88%A0%20%EC%8A%A4%ED%83%9D.JPG?raw=true">
 
 #### 이를 통해 키완얼 고객의 얼굴을 학습하여 최고의 맞춤 컨텐츠를 제공합니다!
 
@@ -136,7 +134,7 @@
 
 <br>
 
-<img src="https://lab.ssafy.com/s03-final/s03p31b107/raw/master/README.img/%EA%B8%B0%EC%88%A0%20%EC%8A%A4%ED%83%9D.JPG" width="50%" height="50%">
+<img src="https://github.com/ParkJaeRim/SmartKiosk/blob/main/README.img/%EA%B8%B0%EC%88%A0%20%EC%8A%A4%ED%83%9D.JPG?raw=true" width="50%" height="50%">
 
 
 <br>
